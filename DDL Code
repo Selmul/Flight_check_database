@@ -1,0 +1,75 @@
+create table Flight
+	(Path_ID		Integer unique,
+	 Departure_time		TIMESTAMP WITH TIME ZONE unique,
+	 Itinerary_ID		char(6) unique,
+	 Status	VARCHAR(30),
+	 Base_Price_USD			MONEY,
+	 primary key (Path_ID, Departure_time,Itinerary_ID)
+	)
+create table Flight_Path
+	(Path_ID		Integer unique,
+	 Aircraft_ID		Integer unique,
+	 Flight_No		smallint,
+	 Departure_Airport	CHAR(3),
+	 Arrival_Airport	CHAR(3),
+	 primary key (Path_ID, Aircraft_ID)
+	)
+create table Aircraft
+	(Aircraft_ID		Integer unique,
+	 Aircraft_model		Varchar(15),
+	 Seat_Number		smallint,
+	 Seat_Class	Varchar(15),
+	 primary key (Aircraft_ID)
+	)	
+	
+create table Airport
+	(Airport_Code char(3) unique,
+	 Airport_name Varchar(45),
+	 Country_name  char(15),
+	 Seat_Class	Varchar(15),
+	 primary key (Airport_Code)
+	)	
+
+create table Passenger
+	(Passenger_ID  Integer unique,
+	 Itinerary_ID char(6) unique,
+	 First_name Varchar(45),
+	 DOB  Date,
+	 primary key (Passenger_ID,Itinerary_ID)
+	)	
+
+	
+ALTER TABLE Flight
+ADD CONSTRAINT fk_Path_ID
+FOREIGN KEY (Path_ID)
+REFERENCES flight_Path(Path_ID)
+ON DELETE CASCADE
+
+
+
+ALTER TABLE Flight
+Add CONSTRAINT fk_itinerary_id
+	   FOREIGN KEY(itinerary_id) 
+		  REFERENCES public.passenger(itinerary_id)
+		  ON DELETE CASCADE		
+		  
+ALTER TABLE flight_Path
+ADD CONSTRAINT fk_aircraft_id
+FOREIGN KEY (aircraft_id)
+REFERENCES public.aircraft(aircraft_id)
+ON DELETE CASCADE
+
+ALTER TABLE public.flight_path
+ADD CONSTRAINT constraint_name UNIQUE (departure_airport,arrival_airport)
+
+ALTER TABLE flight_Path
+ADD CONSTRAINT fk_airport_code
+FOREIGN KEY (departure_airport)
+REFERENCES public.airport(airport_code)
+ON DELETE CASCADE
+
+ALTER TABLE flight_Path
+ADD CONSTRAINT fk_airport_code1
+FOREIGN KEY (arrival_airport)
+REFERENCES public.airport(airport_code)
+ON DELETE CASCADE
